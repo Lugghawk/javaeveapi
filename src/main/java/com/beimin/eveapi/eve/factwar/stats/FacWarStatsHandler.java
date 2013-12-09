@@ -5,18 +5,18 @@ import org.xml.sax.SAXException;
 
 import com.beimin.eveapi.core.AbstractContentHandler;
 
-public class FacWarStatsHandler extends AbstractContentHandler {
-	private FacWarStatsResponse response;
+public class FacWarStatsHandler extends AbstractContentHandler<FacWarStatsResponse> {
 	private boolean factions;
 	private boolean factionWars;
 
 	@Override
 	public void startDocument() throws SAXException {
-		response = new FacWarStatsResponse();
+		setResponse(new FacWarStatsResponse());
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("rowset")) {
 			String name = getString(attrs, "name");
 			factions = name.equals("factions");
@@ -34,14 +34,14 @@ public class FacWarStatsHandler extends AbstractContentHandler {
 				item.setVictoryPointsYesterday(getInt(attrs, "victoryPointsYesterday"));
 				item.setVictoryPointsLastWeek(getInt(attrs, "victoryPointsLastWeek"));
 				item.setVictoryPointsTotal(getInt(attrs, "victoryPointsTotal"));
-				response.addStat(item);
+				getResponse().addStat(item);
 			} else if (factionWars) {
 				ApiFactionWar item = new ApiFactionWar();
 				item.setFactionID(getInt(attrs, "factionID"));
 				item.setFactionName(getString(attrs, "factionName"));
 				item.setAgainstID(getInt(attrs, "againstID"));
 				item.setAgainstName(getString(attrs, "againstName"));
-				response.addStat(item);
+				getResponse().addStat(item);
 			}
 		}
 		super.startElement(uri, localName, qName, attrs);
@@ -50,17 +50,17 @@ public class FacWarStatsHandler extends AbstractContentHandler {
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (qName.equals("killsYesterday"))
-			response.setKillsYesterday(getInt());
+			getResponse().setKillsYesterday(getInt());
 		else if (qName.equals("killsLastWeek"))
-			response.setKillsLastWeek(getInt());
+			getResponse().setKillsLastWeek(getInt());
 		else if (qName.equals("killsTotal"))
-			response.setKillsTotal(getInt());
+			getResponse().setKillsTotal(getInt());
 		else if (qName.equals("victoryPointsYesterday"))
-			response.setVictoryPointsYesterday(getInt());
+			getResponse().setVictoryPointsYesterday(getInt());
 		else if (qName.equals("victoryPointsLastWeek"))
-			response.setVictoryPointsLastWeek(getInt());
+			getResponse().setVictoryPointsLastWeek(getInt());
 		else if (qName.equals("victoryPointsTotal"))
-			response.setVictoryPointsTotal(getInt());
+			getResponse().setVictoryPointsTotal(getInt());
 		else if (qName.equals("rowset")) {
 			factions = false;
 			factionWars = false;
@@ -68,32 +68,4 @@ public class FacWarStatsHandler extends AbstractContentHandler {
 		super.endElement(uri, localName, qName);
 	}
 
-	// @Override
-	// protected Digester getDigester() {
-	// Digester digester = super.getDigester();
-	// digester.addBeanPropertySetter("eveapi/result/totals/killsYesterday");
-	// digester.addBeanPropertySetter("eveapi/result/totals/killsLastWeek");
-	// digester.addBeanPropertySetter("eveapi/result/totals/killsTotal");
-	// digester.addBeanPropertySetter("eveapi/result/totals/victoryPointsYesterday");
-	// digester.addBeanPropertySetter("eveapi/result/totals/victoryPointsLastWeek");
-	// digester.addBeanPropertySetter("eveapi/result/totals/victoryPointsTotal");
-	//
-	// digester.addFactoryCreate("eveapi/result/rowset/row", new AbstractObjectCreationFactory() {
-	// @Override
-	// public Object createObject(Attributes attributes) throws Exception {
-	// if (attributes.getValue("pilots") != null)
-	// return new ApiFactionStats();
-	// return new ApiFactionWar();
-	// }
-	// });
-	// digester.addSetProperties("eveapi/result/rowset/row");
-	// digester.addSetNext("eveapi/result/rowset/row", "addStat");
-	//
-	// return digester;
-	// }
-
-	@Override
-	public FacWarStatsResponse getResponse() {
-		return response;
-	}
 }

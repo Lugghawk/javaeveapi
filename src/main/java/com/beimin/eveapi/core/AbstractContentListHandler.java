@@ -3,37 +3,34 @@ package com.beimin.eveapi.core;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public abstract class AbstractContentListHandler<E extends ApiListResponse<B>, B> extends AbstractContentHandler {
+public abstract class AbstractContentListHandler<E extends ApiListResponse<B>, B> extends
+		AbstractContentHandler<E> {
 	private final Class<E> clazz;
-	protected E response;
 
-	public AbstractContentListHandler(Class<E> clazz) {
+	public AbstractContentListHandler (Class<E> clazz) {
 		this.clazz = clazz;
 	}
 
 	@Override
 	public void startDocument() throws SAXException {
 		try {
-			response = clazz.newInstance();
+			setResponse(clazz.newInstance());
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("row")) {
-			response.add(getItem(attrs));
+			getResponse().add(getItem(attrs));
 		}
 		super.startElement(uri, localName, qName, attrs);
 	}
-	
+
 	protected abstract B getItem(Attributes attrs);
 
-	@Override
-	public ApiResponse getResponse() {
-		return response;
-	}
 }

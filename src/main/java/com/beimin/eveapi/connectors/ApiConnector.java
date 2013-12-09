@@ -18,27 +18,28 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
-import com.beimin.eveapi.core.ApiAuth;
 import com.beimin.eveapi.core.AbstractContentHandler;
+import com.beimin.eveapi.core.ApiAuth;
 import com.beimin.eveapi.core.ApiRequest;
 import com.beimin.eveapi.core.ApiResponse;
 import com.beimin.eveapi.exception.ApiException;
 
 public class ApiConnector {
 	private static final Logger LOG = LoggerFactory.getLogger(ApiConnector.class);
-	
+
 	public static final String EVE_API_URL = "https://api.eveonline.com";
 	private final String baseUrl;
 
-	public ApiConnector() {
+	public ApiConnector () {
 		baseUrl = EVE_API_URL;
 	}
 
-	public ApiConnector(String baseUrl) {
+	public ApiConnector (String baseUrl) {
 		this.baseUrl = baseUrl;
 	}
 
-	public <E extends ApiResponse> E execute(ApiRequest request, AbstractContentHandler contentHandler, Class<E> clazz) throws ApiException {
+	public <E extends ApiResponse> E execute(ApiRequest request, AbstractContentHandler<E> contentHandler,
+			Class<E> clazz) throws ApiException {
 		try {
 			return getApiResponse(contentHandler, getInputStream(getURL(request), getParams(request)), clazz);
 		} catch (Exception e) {
@@ -46,15 +47,15 @@ public class ApiConnector {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	protected <E> E getApiResponse(AbstractContentHandler contentHandler, InputStream inputStream, Class<E> clazz) throws ApiException {
+	protected <E extends ApiResponse> E getApiResponse(AbstractContentHandler<E> contentHandler,
+			InputStream inputStream, Class<E> clazz) throws ApiException {
 		try {
-			SAXParserFactory spf = SAXParserFactory.newInstance(); 
-		    SAXParser sp = spf.newSAXParser(); 
-		    XMLReader xr = sp.getXMLReader(); 
-		    xr.setContentHandler(contentHandler); 
-		    xr.parse(new InputSource(inputStream)); 
-			return (E) contentHandler.getResponse();
+			SAXParserFactory spf = SAXParserFactory.newInstance();
+			SAXParser sp = spf.newSAXParser();
+			XMLReader xr = sp.getXMLReader();
+			xr.setContentHandler(contentHandler);
+			xr.parse(new InputSource(inputStream));
+			return contentHandler.getResponse();
 		} catch (Exception e) {
 			throw new ApiException(e);
 		}
@@ -68,7 +69,8 @@ public class ApiConnector {
 			wr = new OutputStreamWriter(conn.getOutputStream());
 			StringBuilder data = new StringBuilder();
 			for (Entry<String, String> entry : params.entrySet()) {
-				if (data.length() > 0) data.append("&"); // to ensure that we don't append an '&' to the end.
+				if (data.length() > 0)
+					data.append("&"); // to ensure that we don't append an '&' to the end.
 				String key = entry.getKey();
 				String value = entry.getValue();
 				data.append(URLEncoder.encode(key, "UTF8"));

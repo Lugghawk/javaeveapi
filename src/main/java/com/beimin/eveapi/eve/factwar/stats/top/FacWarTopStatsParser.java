@@ -1,6 +1,5 @@
 package com.beimin.eveapi.eve.factwar.stats.top;
 
-
 import com.beimin.eveapi.core.AbstractApiParser;
 import com.beimin.eveapi.core.AbstractContentHandler;
 import com.beimin.eveapi.core.ApiPage;
@@ -8,12 +7,12 @@ import com.beimin.eveapi.core.ApiPath;
 import com.beimin.eveapi.exception.ApiException;
 
 public class FacWarTopStatsParser extends AbstractApiParser<FacWarTopStatsResponse> {
-	private FacWarTopStatsParser() {
+	private FacWarTopStatsParser () {
 		super(FacWarTopStatsResponse.class, 2, ApiPath.EVE, ApiPage.FACT_WAR_TOP_STATS);
 	}
 
 	@Override
-	protected AbstractContentHandler getContentHandler() {
+	protected AbstractContentHandler<FacWarTopStatsResponse> getContentHandler() {
 		return new FacWarTopStatsHandler();
 	}
 

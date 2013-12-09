@@ -1,28 +1,28 @@
 package com.beimin.eveapi.eve.character;
 
-import com.beimin.eveapi.core.AbstractContentHandler;
-import com.beimin.eveapi.core.ApiResponse;
-import com.beimin.eveapi.shared.character.EveBloodline;
-import com.beimin.eveapi.shared.character.EveRace;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class CharacterInfoHandler extends AbstractContentHandler {
-	private CharacterInfoResponse response;
+import com.beimin.eveapi.core.AbstractContentHandler;
+import com.beimin.eveapi.shared.character.EveBloodline;
+import com.beimin.eveapi.shared.character.EveRace;
+
+public class CharacterInfoHandler extends AbstractContentHandler<CharacterInfoResponse> {
 
 	@Override
 	public void startDocument() throws SAXException {
-		response = new CharacterInfoResponse();
+		setResponse(new CharacterInfoResponse());
 		super.startDocument();
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("row")) {
 			CharacterEmployment employ = new CharacterEmployment();
 			employ.setCorporationID(getLong(attrs, "corporationID"));
 			employ.setStartDate(getDate(attrs, "startDate"));
-			response.addEmployment(employ);
+			getResponse().addEmployment(employ);
 		}
 		super.startElement(uri, localName, qName, attrs);
 	}
@@ -30,39 +30,39 @@ public class CharacterInfoHandler extends AbstractContentHandler {
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (qName.equals("characterID"))
-			response.setCharacterID(getLong());
+			getResponse().setCharacterID(getLong());
 		else if (qName.equals("characterName"))
-			response.setCharacterName(getString());
+			getResponse().setCharacterName(getString());
 		else if (qName.equals("race"))
-			response.setRace(getRace());
+			getResponse().setRace(getRace());
 		else if (qName.equals("bloodline"))
-			response.setBloodline(getBloodline());
+			getResponse().setBloodline(getBloodline());
 		else if (qName.equals("accountBalance"))
-			response.setAccountBalance(getDouble());
+			getResponse().setAccountBalance(getDouble());
 		else if (qName.equals("skillPoints"))
-			response.setSkillPoints(getInt());
+			getResponse().setSkillPoints(getInt());
 		else if (qName.equals("shipName"))
-			response.setShipName(getString());
+			getResponse().setShipName(getString());
 		else if (qName.equals("shipTypeID"))
-			response.setShipTypeID(getInt());
+			getResponse().setShipTypeID(getInt());
 		else if (qName.equals("shipTypeName"))
-			response.setShipTypeName(getString());
+			getResponse().setShipTypeName(getString());
 		else if (qName.equals("corporationID"))
-			response.setCorporationID(getLong());
+			getResponse().setCorporationID(getLong());
 		else if (qName.equals("corporation"))
-			response.setCorporation(getString());
+			getResponse().setCorporation(getString());
 		else if (qName.equals("corporationDate"))
-			response.setCorporationDate(getDate());
+			getResponse().setCorporationDate(getDate());
 		else if (qName.equals("allianceID"))
-			response.setAllianceID(getLong());
+			getResponse().setAllianceID(getLong());
 		else if (qName.equals("alliance"))
-			response.setAlliance(getString());
+			getResponse().setAlliance(getString());
 		else if (qName.equals("allianceDate"))
-			response.setAllianceDate(getDate());
+			getResponse().setAllianceDate(getDate());
 		else if (qName.equals("lastKnownLocation"))
-			response.setLastKnownLocation(getString());
+			getResponse().setLastKnownLocation(getString());
 		else if (qName.equals("securityStatus"))
-			response.setSecurityStatus(getDouble());
+			getResponse().setSecurityStatus(getDouble());
 	}
 
 	private EveBloodline getBloodline() {
@@ -71,11 +71,6 @@ public class CharacterInfoHandler extends AbstractContentHandler {
 
 	private EveRace getRace() {
 		return EveRace.valueOf(getString().toUpperCase().replaceAll("[-\\s]", "_"));
-	}
-
-	@Override
-	public ApiResponse getResponse() {
-		return response;
 	}
 
 }

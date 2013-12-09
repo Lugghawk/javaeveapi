@@ -16,12 +16,13 @@ public class CorporationTitlesHandler extends AbstractContentListHandler<Corpora
 	private boolean grantableRolesAtOther;
 	private ApiTitle title;
 
-	public CorporationTitlesHandler() {
+	public CorporationTitlesHandler () {
 		super(CorporationTitlesResponse.class);
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("rowset")) {
 			String name = getString(attrs, "name");
 			roles = name.equals("roles");
@@ -51,7 +52,7 @@ public class CorporationTitlesHandler extends AbstractContentListHandler<Corpora
 				title.addGrantableRoleAtOther(getRole(attrs));
 			} else {
 				title = getItem(attrs);
-				response.add(title);
+				getResponse().add(title);
 			}
 		} else
 			super.startElement(uri, localName, qName, attrs);

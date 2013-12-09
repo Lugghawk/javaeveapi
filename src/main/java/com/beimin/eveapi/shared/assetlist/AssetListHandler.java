@@ -7,18 +7,18 @@ import org.xml.sax.SAXException;
 
 import com.beimin.eveapi.core.AbstractContentHandler;
 
-public class AssetListHandler extends AbstractContentHandler {
-	private AssetListResponse response;
+public class AssetListHandler extends AbstractContentHandler<AssetListResponse> {
 	private EveAsset<EveAsset<?>> currentAsset;
-	private Stack<EveAsset<EveAsset<?>>> stack = new Stack<EveAsset<EveAsset<?>>>();
+	private final Stack<EveAsset<EveAsset<?>>> stack = new Stack<EveAsset<EveAsset<?>>>();
 
 	@Override
 	public void startDocument() throws SAXException {
-		response = new AssetListResponse();
+		setResponse(new AssetListResponse());
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("rowset")) {
 			if (currentAsset != null) {
 				stack.add(currentAsset);
@@ -48,19 +48,15 @@ public class AssetListHandler extends AbstractContentHandler {
 		if (qName.equals("rowset") && !stack.isEmpty()) {
 			EveAsset<EveAsset<?>> asset = stack.pop();
 			if (stack.isEmpty()) {
-				response.add(asset);
+				getResponse().add(asset);
 				currentAsset = null;
 			}
 		}
 		if (qName.equals("row") && stack.isEmpty() && currentAsset != null) {
-			response.add(currentAsset);
+			getResponse().add(currentAsset);
 			currentAsset = null;
 		}
 		super.endElement(uri, localName, qName);
 	}
 
-	@Override
-	public AssetListResponse getResponse() {
-		return response;
-	}
 }

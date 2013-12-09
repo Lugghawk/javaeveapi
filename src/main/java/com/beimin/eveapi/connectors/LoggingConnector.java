@@ -23,16 +23,17 @@ public class LoggingConnector extends ApiConnector {
 	private final Logger logger = LoggerFactory.getLogger(ApiConnector.class);
 	private final ApiConnector baseConnector;
 
-	public LoggingConnector() {
+	public LoggingConnector () {
 		this.baseConnector = null;
 	}
 
-	public LoggingConnector(ApiConnector baseConnector) {
+	public LoggingConnector (ApiConnector baseConnector) {
 		this.baseConnector = baseConnector;
 	}
 
 	@Override
-	public <E extends ApiResponse> E execute(ApiRequest request, AbstractContentHandler contentHandler, Class<E> clazz) throws ApiException {
+	public <E extends ApiResponse> E execute(ApiRequest request, AbstractContentHandler<E> contentHandler,
+			Class<E> clazz) throws ApiException {
 		if (logger.isInfoEnabled())
 			logger.info("\nRequest:\n" + request.toString());
 		ApiConnector connector = getConnector();
@@ -43,19 +44,19 @@ public class LoggingConnector extends ApiConnector {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	protected <E> E getApiResponse(AbstractContentHandler contentHandler, InputStream inputStream, Class<E> clazz) throws ApiException {
+	protected <E extends ApiResponse> E getApiResponse(AbstractContentHandler<E> contentHandler,
+			InputStream inputStream, Class<E> clazz) throws ApiException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		if (logger.isInfoEnabled()) {
 			inputStream = new InputStreamSplitter(inputStream, outputStream);
 		}
 		try {
-			SAXParserFactory spf = SAXParserFactory.newInstance(); 
-		    SAXParser sp = spf.newSAXParser(); 
-		    XMLReader xr = sp.getXMLReader(); 
-		    xr.setContentHandler(contentHandler); 
-		    xr.parse(new InputSource(inputStream)); 
-			return (E) contentHandler.getResponse();
+			SAXParserFactory spf = SAXParserFactory.newInstance();
+			SAXParser sp = spf.newSAXParser();
+			XMLReader xr = sp.getXMLReader();
+			xr.setContentHandler(contentHandler);
+			xr.parse(new InputSource(inputStream));
+			return contentHandler.getResponse();
 		} catch (Exception e) {
 			throw new ApiException(e);
 		} finally {

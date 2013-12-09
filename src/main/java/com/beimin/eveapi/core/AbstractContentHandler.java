@@ -8,9 +8,18 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.beimin.eveapi.utils.DateUtils;
 
-public abstract class AbstractContentHandler extends DefaultHandler {
+public abstract class AbstractContentHandler<E extends ApiResponse> extends DefaultHandler {
 	protected StringBuffer accumulator = new StringBuffer(); // Accumulate parsed text
 	private ApiError error;
+	private E response;
+
+	public final E getResponse() {
+		return response;
+	}
+
+	public final void setResponse(E apiResponse) {
+		this.response = apiResponse;
+	}
 
 	@Override
 	public void characters(char[] buffer, int start, int length) {
@@ -18,7 +27,8 @@ public abstract class AbstractContentHandler extends DefaultHandler {
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("eveapi")) {
 			getResponse().setVersion(getInt(attrs, "version"));
 		} else if (qName.equals("error")) {
@@ -127,5 +137,5 @@ public abstract class AbstractContentHandler extends DefaultHandler {
 		return "1".equals(getString(attrs, qName)) || "true".equalsIgnoreCase(getString(attrs, qName));
 	}
 
-	public abstract ApiResponse getResponse();
+	// public abstract ApiResponse getResponse();
 }

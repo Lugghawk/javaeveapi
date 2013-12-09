@@ -7,36 +7,36 @@ import com.beimin.eveapi.core.ApiPath;
 import com.beimin.eveapi.exception.ApiException;
 
 public class CallListParser extends AbstractApiParser<CallListResponse> {
-	public CallListParser() {
+	public CallListParser () {
 		super(CallListResponse.class, 2, ApiPath.API, ApiPage.CALL_LIST);
 	}
 
 	@Override
-	protected AbstractContentHandler getContentHandler() {
+	protected AbstractContentHandler<CallListResponse> getContentHandler() {
 		return new CallListHandler();
 	}
 
-//	@Override
-//	protected Digester getDigester() {
-//		Digester digester = super.getDigester();
-//		digester.addObjectCreate("eveapi/result", CallList.class);
-//
-//		digester.addFactoryCreate("eveapi/result/rowset/row", new AbstractObjectCreationFactory() {
-//			@Override
-//			public Object createObject(Attributes attributes) throws Exception {
-//				if (attributes.getValue("accessMask") != null) {
-//					return new Call();
-//				} else {
-//					return new CallGroup();
-//				}
-//			}
-//		});
-//		digester.addSetProperties("eveapi/result/rowset/row");
-//		digester.addSetNext("eveapi/result/rowset/row", "add");
-//		digester.addSetNext("eveapi/result", "set");
-//
-//		return digester;
-//	}
+	// @Override
+	// protected Digester getDigester() {
+	// Digester digester = super.getDigester();
+	// digester.addObjectCreate("eveapi/result", CallList.class);
+	//
+	// digester.addFactoryCreate("eveapi/result/rowset/row", new AbstractObjectCreationFactory() {
+	// @Override
+	// public Object createObject(Attributes attributes) throws Exception {
+	// if (attributes.getValue("accessMask") != null) {
+	// return new Call();
+	// } else {
+	// return new CallGroup();
+	// }
+	// }
+	// });
+	// digester.addSetProperties("eveapi/result/rowset/row");
+	// digester.addSetNext("eveapi/result/rowset/row", "add");
+	// digester.addSetNext("eveapi/result", "set");
+	//
+	// return digester;
+	// }
 
 	public static CallListParser getInstance() {
 		return new CallListParser();

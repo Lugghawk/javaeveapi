@@ -5,13 +5,12 @@ import org.xml.sax.SAXException;
 
 import com.beimin.eveapi.core.AbstractContentHandler;
 
-public class AccountStatusHandler extends AbstractContentHandler {
-	private AccountStatusResponse response;
+public class AccountStatusHandler extends AbstractContentHandler<AccountStatusResponse> {
 	private EveAccountStatus accountStatus;
 
 	@Override
 	public void startDocument() throws SAXException {
-		response = new AccountStatusResponse();
+		setResponse(new AccountStatusResponse());
 	}
 
 	@Override
@@ -36,12 +35,8 @@ public class AccountStatusHandler extends AbstractContentHandler {
 		else if (qName.equals("logonMinutes"))
 			accountStatus.setLogonMinutes(getInt());
 		else if (qName.equals("result"))
-			response.set(accountStatus);
+			getResponse().set(accountStatus);
 		super.endElement(uri, localName, qName);
 	}
 
-	@Override
-	public AccountStatusResponse getResponse() {
-		return response;
-	}
 }

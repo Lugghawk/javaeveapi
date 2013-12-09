@@ -16,14 +16,14 @@ public abstract class AbstractApiParser<E extends ApiResponse> {
 	protected final int version;
 	protected final Class<E> clazz;
 
-	public AbstractApiParser(Class<E> clazz, int version, ApiPath path, ApiPage page) {
+	public AbstractApiParser (Class<E> clazz, int version, ApiPath path, ApiPage page) {
 		this.clazz = clazz;
 		this.version = version;
 		this.path = path;
 		this.page = page;
 	}
 
-	protected abstract AbstractContentHandler getContentHandler();
+	protected abstract AbstractContentHandler<E> getContentHandler();
 
 	protected E getResponse() throws ApiException {
 		return getResponse(new ApiRequest(path, page, version));
@@ -34,7 +34,8 @@ public abstract class AbstractApiParser<E extends ApiResponse> {
 	}
 
 	protected E getResponse(ApiAuth<?> auth, String paramName, String paramValue) throws ApiException {
-		return getResponse(new ApiRequest(path, page, version, auth, Collections.singletonMap(paramName, paramValue)));
+		return getResponse(new ApiRequest(path, page, version, auth, Collections.singletonMap(paramName,
+				paramValue)));
 	}
 
 	protected E getResponse(ApiAuth<?> auth, Map<String, String> extraParams) throws ApiException {
@@ -42,7 +43,8 @@ public abstract class AbstractApiParser<E extends ApiResponse> {
 	}
 
 	protected E getResponse(String paramName, String paramValue) throws ApiException {
-		return getResponse(new ApiRequest(path, page, version, Collections.singletonMap(paramName, paramValue)));
+		return getResponse(new ApiRequest(path, page, version,
+				Collections.singletonMap(paramName, paramValue)));
 	}
 
 	private E getResponse(ApiRequest request) throws ApiException {

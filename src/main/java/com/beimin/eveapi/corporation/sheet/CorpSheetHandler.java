@@ -5,19 +5,19 @@ import org.xml.sax.SAXException;
 
 import com.beimin.eveapi.core.AbstractContentHandler;
 
-public class CorpSheetHandler extends AbstractContentHandler {
-	private CorpSheetResponse response;
+public class CorpSheetHandler extends AbstractContentHandler<CorpSheetResponse> {
 	private ApiCorpLogo logo;
 	private boolean divisions;
 	private boolean walletDivisions;
 
 	@Override
 	public void startDocument() throws SAXException {
-		response = new CorpSheetResponse();
+		setResponse(new CorpSheetResponse());
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("logo")) {
 			logo = new ApiCorpLogo();
 		} else if (qName.equals("rowset")) {
@@ -28,10 +28,10 @@ public class CorpSheetHandler extends AbstractContentHandler {
 			Division division = new Division();
 			division.setAccountKey(getInt(attrs, "accountKey"));
 			division.setDescription(getString(attrs, "description"));
-			if(divisions)
-				response.addDivision(division);
+			if (divisions)
+				getResponse().addDivision(division);
 			else if (walletDivisions)
-				response.addWalletDivision(division);
+				getResponse().addWalletDivision(division);
 		}
 		super.startElement(uri, localName, qName, attrs);
 		accumulator.setLength(0);
@@ -40,37 +40,37 @@ public class CorpSheetHandler extends AbstractContentHandler {
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (qName.equals("corporationID")) {
-			response.setCorporationID(getLong());
+			getResponse().setCorporationID(getLong());
 		} else if (qName.equals("corporationName")) {
-			response.setCorporationName(getString());
+			getResponse().setCorporationName(getString());
 		} else if (qName.equals("ticker")) {
-			response.setTicker(getString());
+			getResponse().setTicker(getString());
 		} else if (qName.equals("ceoID")) {
-			response.setCeoID(getLong());
+			getResponse().setCeoID(getLong());
 		} else if (qName.equals("ceoName")) {
-			response.setCeoName(getString());
+			getResponse().setCeoName(getString());
 		} else if (qName.equals("stationID")) {
-			response.setStationID(getLong());
+			getResponse().setStationID(getLong());
 		} else if (qName.equals("stationName")) {
-			response.setStationName(getString());
+			getResponse().setStationName(getString());
 		} else if (qName.equals("description")) {
-			response.setDescription(getString());
+			getResponse().setDescription(getString());
 		} else if (qName.equals("url")) {
-			response.setUrl(getString());
+			getResponse().setUrl(getString());
 		} else if (qName.equals("allianceID")) {
-			response.setAllianceID(getLong());
+			getResponse().setAllianceID(getLong());
 		} else if (qName.equals("allianceName")) {
-			response.setAllianceName(getString());
-        } else if (qName.equals("factionID")) {
-            response.setFactionID(getLong());
+			getResponse().setAllianceName(getString());
+		} else if (qName.equals("factionID")) {
+			getResponse().setFactionID(getLong());
 		} else if (qName.equals("taxRate")) {
-			response.setTaxRate(getDouble());
+			getResponse().setTaxRate(getDouble());
 		} else if (qName.equals("memberCount")) {
-			response.setMemberCount(getInt());
+			getResponse().setMemberCount(getInt());
 		} else if (qName.equals("memberLimit")) {
-			response.setMemberLimit(getInt());
+			getResponse().setMemberLimit(getInt());
 		} else if (qName.equals("shares")) {
-			response.setShares(getLong());
+			getResponse().setShares(getLong());
 		} else if (qName.equals("graphicsID")) {
 			logo.setGraphicID(getInt());
 		} else if (qName.equals("shape1")) {
@@ -86,9 +86,9 @@ public class CorpSheetHandler extends AbstractContentHandler {
 		} else if (qName.equals("color3")) {
 			logo.setColor3(getInt());
 		} else if (qName.equals("logo")) {
-			response.setLogo(logo);
+			getResponse().setLogo(logo);
 		} else if (qName.equals("rowset")) {
-			if(divisions || walletDivisions) {
+			if (divisions || walletDivisions) {
 				divisions = false;
 				walletDivisions = false;
 			}
@@ -97,8 +97,4 @@ public class CorpSheetHandler extends AbstractContentHandler {
 		super.endElement(uri, localName, qName);
 	}
 
-	@Override
-	public CorpSheetResponse getResponse() {
-		return response;
-	}
 }

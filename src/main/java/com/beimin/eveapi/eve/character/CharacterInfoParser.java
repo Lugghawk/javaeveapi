@@ -8,12 +8,12 @@ import com.beimin.eveapi.core.ApiPath;
 import com.beimin.eveapi.exception.ApiException;
 
 public class CharacterInfoParser extends AbstractApiParser<CharacterInfoResponse> {
-	public CharacterInfoParser() {
+	public CharacterInfoParser () {
 		super(CharacterInfoResponse.class, 2, ApiPath.EVE, ApiPage.CHARACTER_INFO);
 	}
 
 	@Override
-	protected AbstractContentHandler getContentHandler() {
+	protected AbstractContentHandler<CharacterInfoResponse> getContentHandler() {
 		return new CharacterInfoHandler();
 	}
 

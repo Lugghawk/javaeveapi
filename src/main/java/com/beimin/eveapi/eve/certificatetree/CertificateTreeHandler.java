@@ -5,7 +5,8 @@ import org.xml.sax.SAXException;
 
 import com.beimin.eveapi.core.AbstractContentListHandler;
 
-public class CertificateTreeHandler extends AbstractContentListHandler<CertificateTreeResponse, ApiCertificateCategory> {
+public class CertificateTreeHandler extends
+		AbstractContentListHandler<CertificateTreeResponse, ApiCertificateCategory> {
 	private boolean categories;
 	private boolean classes;
 	private boolean certificates;
@@ -15,12 +16,13 @@ public class CertificateTreeHandler extends AbstractContentListHandler<Certifica
 	private ApiCertificateClass certificateClass;
 	private ApiCertificate certificate;
 
-	public CertificateTreeHandler() {
+	public CertificateTreeHandler () {
 		super(CertificateTreeResponse.class);
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("rowset")) {
 			String name = getString(attrs, "name");
 			if (name.equals("categories"))
@@ -34,7 +36,7 @@ public class CertificateTreeHandler extends AbstractContentListHandler<Certifica
 			else if (name.equals("requiredCertificates"))
 				requiredCertificates = true;
 		} else if (qName.equals("row")) {
-			 if (requiredSkills) {
+			if (requiredSkills) {
 				RequiredSkill skill = new RequiredSkill();
 				skill.setTypeID(getInt(attrs, "typeID"));
 				skill.setLevel(getInt(attrs, "level"));
@@ -60,7 +62,7 @@ public class CertificateTreeHandler extends AbstractContentListHandler<Certifica
 		} else
 			super.startElement(uri, localName, qName, attrs);
 	}
-	
+
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (qName.equals("rowset")) {
@@ -85,13 +87,13 @@ public class CertificateTreeHandler extends AbstractContentListHandler<Certifica
 				category.add(certificateClass);
 				certificateClass = null;
 			} else if (categories) {
-				response.add(category);
+				getResponse().add(category);
 				category = null;
-			} 
-		} else 
+			}
+		} else
 			super.endElement(uri, localName, qName);
 	}
-	
+
 	@Override
 	protected ApiCertificateCategory getItem(Attributes attrs) {
 		ApiCertificateCategory item = new ApiCertificateCategory();

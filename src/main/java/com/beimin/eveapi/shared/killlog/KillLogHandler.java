@@ -10,13 +10,14 @@ public class KillLogHandler extends AbstractContentListHandler<KillLogResponse, 
 	private boolean inAttackers;
 	private boolean inItems;
 
-	public KillLogHandler() {
+	public KillLogHandler () {
 		super(KillLogResponse.class);
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
-		
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
+
 		if (qName.equals("rowset")) {
 			String name = getString(attrs, "name");
 			inAttackers = name.equals("attackers");
@@ -74,7 +75,7 @@ public class KillLogHandler extends AbstractContentListHandler<KillLogResponse, 
 		}
 		if (qName.equals("row")) {
 			if (!inAttackers && !inItems) {
-				response.add(apiKill);
+				getResponse().add(apiKill);
 				apiKill = null;
 			}
 		}

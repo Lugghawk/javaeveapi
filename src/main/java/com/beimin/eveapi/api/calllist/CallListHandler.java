@@ -6,15 +6,14 @@ import org.xml.sax.SAXException;
 import com.beimin.eveapi.core.AbstractContentHandler;
 import com.beimin.eveapi.shared.KeyType;
 
-public class CallListHandler extends AbstractContentHandler {
-	private CallListResponse response;
+public class CallListHandler extends AbstractContentHandler<CallListResponse> {
 	private boolean callGroups = false;
 	private boolean calls = false;
 	private CallList callList;
 
 	@Override
 	public void startDocument() throws SAXException {
-		response = new CallListResponse();
+		setResponse(new CallListResponse());
 	}
 
 	@Override
@@ -26,18 +25,18 @@ public class CallListHandler extends AbstractContentHandler {
 			String name = attrs.getValue("name");
 			if (name.equals("callGroups")) {
 				callGroups = true;
-			} else if(name.equals("calls")) {
+			} else if (name.equals("calls")) {
 				calls = true;
 			}
 		}
 		if (qName.equals("row")) {
-			if(callGroups) {
+			if (callGroups) {
 				CallGroup callGroup = new CallGroup();
 				callGroup.setGroupID(getInt(attrs, "groupID"));
 				callGroup.setName(getString(attrs, "name"));
 				callGroup.setDescription(getString(attrs, "description"));
 				callList.add(callGroup);
-			} else if(calls) {
+			} else if (calls) {
 				Call call = new Call();
 				call.setAccessMask(getLong(attrs, "accessMask"));
 				call.setType(KeyType.valueOf(getString(attrs, "type")));
@@ -53,7 +52,7 @@ public class CallListHandler extends AbstractContentHandler {
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (qName.equals("result"))
-			response.set(callList);
+			getResponse().set(callList);
 		if (qName.equals("rowset")) {
 			callGroups = false;
 			calls = false;
@@ -61,8 +60,4 @@ public class CallListHandler extends AbstractContentHandler {
 		super.endElement(uri, localName, qName);
 	}
 
-	@Override
-	public CallListResponse getResponse() {
-		return response;
-	}
 }

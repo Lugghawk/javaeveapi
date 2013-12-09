@@ -4,10 +4,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import com.beimin.eveapi.core.AbstractContentHandler;
-import com.beimin.eveapi.core.ApiResponse;
 
-public class FacWarTopStatsHandler extends AbstractContentHandler {
-	private FacWarTopStatsResponse response;
+public class FacWarTopStatsHandler extends AbstractContentHandler<FacWarTopStatsResponse> {
 	private boolean characters;
 	private boolean corporations;
 	private boolean factions;
@@ -20,11 +18,12 @@ public class FacWarTopStatsHandler extends AbstractContentHandler {
 
 	@Override
 	public void startDocument() throws SAXException {
-		response = new FacWarTopStatsResponse();
+		setResponse(new FacWarTopStatsResponse());
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("characters"))
 			characters = true;
 		else if (qName.equals("corporations"))
@@ -42,43 +41,43 @@ public class FacWarTopStatsHandler extends AbstractContentHandler {
 		} else if (qName.equals("row")) {
 			if (characters) {
 				if (killsYesterday)
-					response.addYesterday(getCharKill(attrs));
+					getResponse().addYesterday(getCharKill(attrs));
 				else if (killsLastWeek)
-					response.addLastWeek(getCharKill(attrs));
+					getResponse().addLastWeek(getCharKill(attrs));
 				else if (killsTotal)
-					response.addTotal(getCharKill(attrs));
+					getResponse().addTotal(getCharKill(attrs));
 				else if (victoryPointsYesterday)
-					response.addYesterday(getCharVP(attrs));
+					getResponse().addYesterday(getCharVP(attrs));
 				else if (victoryPointsLastWeek)
-					response.addLastWeek(getCharVP(attrs));
+					getResponse().addLastWeek(getCharVP(attrs));
 				else if (victoryPointsTotal)
-					response.addTotal(getCharVP(attrs));
+					getResponse().addTotal(getCharVP(attrs));
 			} else if (corporations) {
 				if (killsYesterday)
-					response.addYesterday(getCorpKill(attrs));
+					getResponse().addYesterday(getCorpKill(attrs));
 				else if (killsLastWeek)
-					response.addLastWeek(getCorpKill(attrs));
+					getResponse().addLastWeek(getCorpKill(attrs));
 				else if (killsTotal)
-					response.addTotal(getCorpKill(attrs));
+					getResponse().addTotal(getCorpKill(attrs));
 				else if (victoryPointsYesterday)
-					response.addYesterday(getCorpVP(attrs));
+					getResponse().addYesterday(getCorpVP(attrs));
 				else if (victoryPointsLastWeek)
-					response.addLastWeek(getCorpVP(attrs));
+					getResponse().addLastWeek(getCorpVP(attrs));
 				else if (victoryPointsTotal)
-					response.addTotal(getCorpVP(attrs));
+					getResponse().addTotal(getCorpVP(attrs));
 			} else if (factions) {
 				if (killsYesterday)
-					response.addYesterday(getFactionKill(attrs));
+					getResponse().addYesterday(getFactionKill(attrs));
 				else if (killsLastWeek)
-					response.addLastWeek(getFactionKill(attrs));
+					getResponse().addLastWeek(getFactionKill(attrs));
 				else if (killsTotal)
-					response.addTotal(getFactionKill(attrs));
+					getResponse().addTotal(getFactionKill(attrs));
 				else if (victoryPointsYesterday)
-					response.addYesterday(getFactionVP(attrs));
+					getResponse().addYesterday(getFactionVP(attrs));
 				else if (victoryPointsLastWeek)
-					response.addLastWeek(getFactionVP(attrs));
+					getResponse().addLastWeek(getFactionVP(attrs));
 				else if (victoryPointsTotal)
-					response.addTotal(getFactionVP(attrs));
+					getResponse().addTotal(getFactionVP(attrs));
 			}
 		} else
 			super.startElement(uri, localName, qName, attrs);
@@ -161,8 +160,4 @@ public class FacWarTopStatsHandler extends AbstractContentHandler {
 			super.endElement(uri, localName, qName);
 	}
 
-	@Override
-	public ApiResponse getResponse() {
-		return response;
-	}
 }

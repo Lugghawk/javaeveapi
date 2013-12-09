@@ -12,12 +12,13 @@ public class SkillTreeHandler extends AbstractContentListHandler<SkillTreeRespon
 	private ApiSkillGroup skillGroup;
 	private ApiSkill skill;
 
-	public SkillTreeHandler() {
+	public SkillTreeHandler () {
 		super(SkillTreeResponse.class);
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("rowset")) {
 			String name = getString(attrs, "name");
 			if (name.equals("skills"))
@@ -60,7 +61,7 @@ public class SkillTreeHandler extends AbstractContentListHandler<SkillTreeRespon
 				skillBonusCollection = false;
 			} else if (skills) {
 				skills = false;
-				response.add(skillGroup);
+				getResponse().add(skillGroup);
 				skillGroup = null;
 			}
 		} else if (qName.equals("description")) {

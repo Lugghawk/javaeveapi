@@ -5,16 +5,16 @@ import org.xml.sax.SAXException;
 
 import com.beimin.eveapi.core.AbstractContentHandler;
 
-public class ConquerableStationListHandler extends AbstractContentHandler {
-	private StationListResponse response;
+public class ConquerableStationListHandler extends AbstractContentHandler<StationListResponse> {
 
 	@Override
 	public void startDocument() throws SAXException {
-		response = new StationListResponse();
+		setResponse(new StationListResponse());
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("row")) {
 			ApiStation item = new ApiStation();
 			item.setStationID(getInt(attrs, "stationID"));
@@ -23,14 +23,10 @@ public class ConquerableStationListHandler extends AbstractContentHandler {
 			item.setSolarSystemID(getInt(attrs, "solarSystemID"));
 			item.setCorporationID(getInt(attrs, "corporationID"));
 			item.setCorporationName(getString(attrs, "corporationName"));
-			response.add(item);
+			getResponse().add(item);
 		}
 		super.startElement(uri, localName, qName, attrs);
 		accumulator.setLength(0);
 	}
 
-	@Override
-	public StationListResponse getResponse() {
-		return response;
-	}
 }

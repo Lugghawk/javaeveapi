@@ -8,12 +8,13 @@ import com.beimin.eveapi.core.AbstractContentListHandler;
 public class MailBodiesHandler extends AbstractContentListHandler<MailBodiesResponse, ApiMailBody> {
 	private ApiMailBody mailBody;
 
-	public MailBodiesHandler() {
+	public MailBodiesHandler () {
 		super(MailBodiesResponse.class);
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("row")) {
 			mailBody = getItem(attrs);
 		} else
@@ -24,7 +25,7 @@ public class MailBodiesHandler extends AbstractContentListHandler<MailBodiesResp
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (qName.equals("row")) {
 			mailBody.setBody(getString());
-			response.add(mailBody);
+			getResponse().add(mailBody);
 			mailBody = null;
 			accumulator.setLength(0);
 		}

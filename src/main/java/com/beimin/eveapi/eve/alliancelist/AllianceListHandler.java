@@ -9,12 +9,13 @@ public class AllianceListHandler extends AbstractContentListHandler<AllianceList
 	private boolean memberCorporations;
 	private ApiAlliance alliance;
 
-	public AllianceListHandler() {
+	public AllianceListHandler () {
 		super(AllianceListResponse.class);
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("rowset"))
 			memberCorporations = getString(attrs, "name").equals("memberCorporations");
 		else if (qName.equals("row")) {
@@ -25,7 +26,7 @@ public class AllianceListHandler extends AbstractContentListHandler<AllianceList
 				alliance.add(memberCorporation);
 			} else {
 				alliance = getItem(attrs);
-				response.add(alliance);
+				getResponse().add(alliance);
 			}
 		} else
 			super.startElement(uri, localName, qName, attrs);

@@ -5,26 +5,26 @@ import org.xml.sax.SAXException;
 
 import com.beimin.eveapi.core.AbstractContentHandler;
 
-public class StarbaseDetailHandler extends AbstractContentHandler {
-	private StarbaseDetailResponse response;
+public class StarbaseDetailHandler extends AbstractContentHandler<StarbaseDetailResponse> {
 
 	@Override
 	public void startDocument() throws SAXException {
-		response = new StarbaseDetailResponse();
+		setResponse(new StarbaseDetailResponse());
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
-		 if (qName.equals("onStandingDrop")) {
-			response.setOnStandingDrop(getCombatSetting(attrs));
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
+		if (qName.equals("onStandingDrop")) {
+			getResponse().setOnStandingDrop(getCombatSetting(attrs));
 		} else if (qName.equals("onStatusDrop")) {
-			response.setOnStatusDrop(getCombatSetting(attrs));
+			getResponse().setOnStatusDrop(getCombatSetting(attrs));
 		} else if (qName.equals("onAggression")) {
-			response.setOnAggression(getCombatSetting(attrs));
+			getResponse().setOnAggression(getCombatSetting(attrs));
 		} else if (qName.equals("onCorporationWar")) {
-			response.setOnCorporationWar(getCombatSetting(attrs));
+			getResponse().setOnCorporationWar(getCombatSetting(attrs));
 		} else if (qName.equals("row")) {
-			response.addFuelLevel(getInt(attrs, "typeID"), getInt(attrs, "quantity"));
+			getResponse().addFuelLevel(getInt(attrs, "typeID"), getInt(attrs, "quantity"));
 		} else
 			super.startElement(uri, localName, qName, attrs);
 	}
@@ -32,7 +32,7 @@ public class StarbaseDetailHandler extends AbstractContentHandler {
 	private ApiCombatSetting getCombatSetting(Attributes attrs) {
 		ApiCombatSetting onStandingDrop = new ApiCombatSetting();
 		Integer standing = getInt(attrs, "standing");
-		if(standing != null)
+		if (standing != null)
 			onStandingDrop.setStanding(standing);
 		onStandingDrop.setEnabled(getBoolean(attrs, "enabled"));
 		return onStandingDrop;
@@ -41,22 +41,17 @@ public class StarbaseDetailHandler extends AbstractContentHandler {
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (qName.equals("usageFlags")) {
-			response.setUsageFlags(getInt());
+			getResponse().setUsageFlags(getInt());
 		} else if (qName.equals("deployFlags")) {
-			response.setDeployFlags(getInt());
+			getResponse().setDeployFlags(getInt());
 		} else if (qName.equals("allowCorporationMembers")) {
-			response.setAllowCorporationMembers(getBoolean());
+			getResponse().setAllowCorporationMembers(getBoolean());
 		} else if (qName.equals("allowAllianceMembers")) {
-			response.setAllowAllianceMembers(getBoolean());
+			getResponse().setAllowAllianceMembers(getBoolean());
 		} else if (qName.equals("claimSovereignty")) {
-			response.setClaimSovereignty(getBoolean());
-		} 
-		
-		super.endElement(uri, localName, qName);
-	}
+			getResponse().setClaimSovereignty(getBoolean());
+		}
 
-	@Override
-	public StarbaseDetailResponse getResponse() {
-		return response;
+		super.endElement(uri, localName, qName);
 	}
 }

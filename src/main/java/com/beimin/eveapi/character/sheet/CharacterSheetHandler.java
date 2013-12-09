@@ -8,18 +8,18 @@ import com.beimin.eveapi.shared.character.EveAncestry;
 import com.beimin.eveapi.shared.character.EveBloodline;
 import com.beimin.eveapi.shared.character.EveRace;
 
-public class CharacterSheetHandler extends AbstractContentHandler {
-	private CharacterSheetResponse response;
+public class CharacterSheetHandler extends AbstractContentHandler<CharacterSheetResponse> {
 	private ApiAttributeEnhancer attributeEnhancer;
 	private String rowsetName;
 
 	@Override
 	public void startDocument() throws SAXException {
-		response = new CharacterSheetResponse();
+		setResponse(new CharacterSheetResponse());
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("intelligenceBonus"))
 			attributeEnhancer = new IntelligenceBonus();
 		else if (qName.equals("memoryBonus"))
@@ -41,36 +41,36 @@ public class CharacterSheetHandler extends AbstractContentHandler {
 					skill.setLevel(level);
 				skill.setSkillpoints(getInt(attrs, "skillpoints"));
 				skill.setUnpublished(getBoolean(attrs, "unpublished"));
-				response.addSkill(skill);
+				getResponse().addSkill(skill);
 			} else if ("certificates".equals(rowsetName)) {
 				ApiCertificate certificate = new ApiCertificate();
 				certificate.setCertificateID(getInt(attrs, "certificateID"));
-				response.addCertificate(certificate);
+				getResponse().addCertificate(certificate);
 			} else if ("corporationRoles".equals(rowsetName)) {
 				ApiCorporationRole corporationRole = new ApiCorporationRole();
 				corporationRole.setRoleID(getLong(attrs, "roleID"));
 				corporationRole.setRoleName(getString(attrs, "roleName"));
-				response.addCorporationRole(corporationRole);
+				getResponse().addCorporationRole(corporationRole);
 			} else if ("corporationRolesAtHQ".equals(rowsetName)) {
 				ApiCorporationRole corporationRole = new ApiCorporationRole();
 				corporationRole.setRoleID(getLong(attrs, "roleID"));
 				corporationRole.setRoleName(getString(attrs, "roleName"));
-				response.addCorporationRoleAtHQ(corporationRole);
+				getResponse().addCorporationRoleAtHQ(corporationRole);
 			} else if ("corporationRolesAtBase".equals(rowsetName)) {
 				ApiCorporationRole corporationRole = new ApiCorporationRole();
 				corporationRole.setRoleID(getLong(attrs, "roleID"));
 				corporationRole.setRoleName(getString(attrs, "roleName"));
-				response.addCorporationRoleAtBase(corporationRole);
+				getResponse().addCorporationRoleAtBase(corporationRole);
 			} else if ("corporationRolesAtOther".equals(rowsetName)) {
 				ApiCorporationRole corporationRole = new ApiCorporationRole();
 				corporationRole.setRoleID(getLong(attrs, "roleID"));
 				corporationRole.setRoleName(getString(attrs, "roleName"));
-				response.addCorporationRoleAtOther(corporationRole);
+				getResponse().addCorporationRoleAtOther(corporationRole);
 			} else if ("corporationTitles".equals(rowsetName)) {
 				ApiCorporationTitle corporationTitle = new ApiCorporationTitle();
 				corporationTitle.setTitleID(getLong(attrs, "titleID"));
 				corporationTitle.setTitleName(getString(attrs, "titleName"));
-				response.addCorporationTitle(corporationTitle);
+				getResponse().addCorporationTitle(corporationTitle);
 			}
 		}
 
@@ -81,47 +81,47 @@ public class CharacterSheetHandler extends AbstractContentHandler {
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (qName.equals("characterID"))
-			response.setCharacterID(getLong());
+			getResponse().setCharacterID(getLong());
 		else if (qName.equals("name"))
-			response.setName(getString());
+			getResponse().setName(getString());
 		else if (qName.equals("race"))
-			response.setRace(getRace());
+			getResponse().setRace(getRace());
 		else if (qName.equals("DoB"))
-			response.setDateOfBirth(getDate());
+			getResponse().setDateOfBirth(getDate());
 		else if (qName.equals("bloodLine"))
-			response.setBloodLine(getBloodline());
+			getResponse().setBloodLine(getBloodline());
 		else if (qName.equals("ancestry"))
-			response.setAncestry(getAncestry());
+			getResponse().setAncestry(getAncestry());
 		else if (qName.equals("gender"))
-			response.setGender(getString());
+			getResponse().setGender(getString());
 		else if (qName.equals("corporationID"))
-			response.setCorporationID(getLong());
+			getResponse().setCorporationID(getLong());
 		else if (qName.equals("corporationName"))
-			response.setCorporationName(getString());
+			getResponse().setCorporationName(getString());
 		else if (qName.equals("allianceID"))
-			response.setAllianceID(getLong());
+			getResponse().setAllianceID(getLong());
 		else if (qName.equals("allianceName")) {
 			if (getString() != null && !getString().equals(""))
-				response.setAllianceName(getString());
+				getResponse().setAllianceName(getString());
 		} else if (qName.equals("balance"))
-			response.setBalance(getDouble());
+			getResponse().setBalance(getDouble());
 		else if (qName.equals("augmentatorName"))
 			attributeEnhancer.setAugmentatorName(getString());
 		else if (qName.equals("augmentatorValue"))
 			attributeEnhancer.setAugmentatorValue(getInt());
 		else if (qName.endsWith("Bonus")) {
-			response.addAttributeEnhancer(attributeEnhancer);
+			getResponse().addAttributeEnhancer(attributeEnhancer);
 			attributeEnhancer = null;
 		} else if (qName.equals("intelligence"))
-			response.setIntelligence(getInt());
+			getResponse().setIntelligence(getInt());
 		else if (qName.equals("memory"))
-			response.setMemory(getInt());
+			getResponse().setMemory(getInt());
 		else if (qName.equals("charisma"))
-			response.setCharisma(getInt());
+			getResponse().setCharisma(getInt());
 		else if (qName.equals("perception"))
-			response.setPerception(getInt());
+			getResponse().setPerception(getInt());
 		else if (qName.equals("willpower"))
-			response.setWillpower(getInt());
+			getResponse().setWillpower(getInt());
 		else if (qName.equals("rowset"))
 			rowsetName = null;
 		super.endElement(uri, localName, qName);
@@ -139,8 +139,4 @@ public class CharacterSheetHandler extends AbstractContentHandler {
 		return EveRace.valueOf(getString().toUpperCase().replaceAll("[-\\s]", "_"));
 	}
 
-	@Override
-	public CharacterSheetResponse getResponse() {
-		return response;
-	}
 }

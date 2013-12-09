@@ -5,19 +5,18 @@ import org.xml.sax.SAXException;
 
 import com.beimin.eveapi.core.AbstractContentHandler;
 
-public class ContactListHandler<CLR extends AbstractContactListResponse> extends AbstractContentHandler {
+public class ContactListHandler<CLR extends AbstractContactListResponse> extends AbstractContentHandler<CLR> {
 	private final Class<CLR> clazz;
-	private CLR response;
 	private ContactList contactList;
 
-	public ContactListHandler(Class<CLR> clazz) {
+	public ContactListHandler (Class<CLR> clazz) {
 		this.clazz = clazz;
 	}
 
 	@Override
 	public void startDocument() throws SAXException {
 		try {
-			response = clazz.newInstance();
+			setResponse(clazz.newInstance());
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -26,7 +25,8 @@ public class ContactListHandler<CLR extends AbstractContactListResponse> extends
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("rowset")) {
 			contactList = new ContactList();
 			contactList.setName(getString(attrs, "name"));
@@ -46,14 +46,10 @@ public class ContactListHandler<CLR extends AbstractContactListResponse> extends
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (qName.equals("rowset")) {
-			response.add(contactList);
+			getResponse().add(contactList);
 			contactList = null;
 		}
 		super.endElement(uri, localName, qName);
 	}
 
-	@Override
-	public CLR getResponse() {
-		return response;
-	}
 }

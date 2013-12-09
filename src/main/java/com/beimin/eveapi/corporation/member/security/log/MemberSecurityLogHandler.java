@@ -6,17 +6,19 @@ import org.xml.sax.SAXException;
 import com.beimin.eveapi.core.AbstractContentListHandler;
 import com.beimin.eveapi.corporation.member.security.ApiSecurityRole;
 
-public class MemberSecurityLogHandler extends AbstractContentListHandler<MemberSecurityLogResponse, ApiRoleHistory> {
+public class MemberSecurityLogHandler extends
+		AbstractContentListHandler<MemberSecurityLogResponse, ApiRoleHistory> {
 	private boolean oldRoles;
 	private boolean newRoles;
 	private ApiRoleHistory roleHistory;
 
-	public MemberSecurityLogHandler() {
+	public MemberSecurityLogHandler () {
 		super(MemberSecurityLogResponse.class);
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("rowset")) {
 			String name = getString(attrs, "name");
 			oldRoles = name.equals("oldRoles");
@@ -28,7 +30,7 @@ public class MemberSecurityLogHandler extends AbstractContentListHandler<MemberS
 				roleHistory.addNewRole(getRole(attrs));
 			} else {
 				roleHistory = getItem(attrs);
-				response.add(roleHistory);
+				getResponse().add(roleHistory);
 			}
 		} else
 			super.startElement(uri, localName, qName, attrs);

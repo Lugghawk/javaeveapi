@@ -4,10 +4,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import com.beimin.eveapi.core.AbstractContentHandler;
-import com.beimin.eveapi.core.ApiResponse;
 
-public class MemberSecurityHandler extends AbstractContentHandler {
-	private MemberSecurityResponse response;
+public class MemberSecurityHandler extends AbstractContentHandler<MemberSecurityResponse> {
 	private boolean roles;
 	private boolean grantableRoles;
 	private boolean rolesAtHQ;
@@ -21,11 +19,12 @@ public class MemberSecurityHandler extends AbstractContentHandler {
 
 	@Override
 	public void startDocument() throws SAXException {
-		response = new MemberSecurityResponse();
+		setResponse(new MemberSecurityResponse());
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		if (qName.equals("rowset")) {
 			String name = getString(attrs, "name");
 			roles = name.equals("roles");
@@ -60,7 +59,7 @@ public class MemberSecurityHandler extends AbstractContentHandler {
 				member = new ApiSecurityMember();
 				member.setCharacterID(getLong(attrs, "characterID"));
 				member.setName(getString(attrs, "name"));
-				response.addMember(member);
+				getResponse().addMember(member);
 			}
 		} else
 			super.startElement(uri, localName, qName, attrs);
@@ -106,8 +105,4 @@ public class MemberSecurityHandler extends AbstractContentHandler {
 		super.endElement(uri, localName, qName);
 	}
 
-	@Override
-	public ApiResponse getResponse() {
-		return response;
-	}
 }

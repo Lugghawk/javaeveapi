@@ -1,19 +1,20 @@
 package com.beimin.eveapi.shared.contacts;
 
 import com.beimin.eveapi.core.AbstractApiParser;
-import com.beimin.eveapi.core.ApiAuth;
 import com.beimin.eveapi.core.AbstractContentHandler;
+import com.beimin.eveapi.core.ApiAuth;
 import com.beimin.eveapi.core.ApiPage;
 import com.beimin.eveapi.core.ApiPath;
 import com.beimin.eveapi.exception.ApiException;
 
-public abstract class AbstractContactListParser<CLR extends AbstractContactListResponse> extends AbstractApiParser<CLR> {
-	protected AbstractContactListParser(Class<CLR> responseClass, ApiPath path) {
+public abstract class AbstractContactListParser<CLR extends AbstractContactListResponse> extends
+		AbstractApiParser<CLR> {
+	protected AbstractContactListParser (Class<CLR> responseClass, ApiPath path) {
 		super(responseClass, 2, path, ApiPage.CONTACT_LIST);
 	}
 
 	@Override
-	protected AbstractContentHandler getContentHandler() {
+	protected AbstractContentHandler<CLR> getContentHandler() {
 		return new ContactListHandler<CLR>(clazz);
 	}
 

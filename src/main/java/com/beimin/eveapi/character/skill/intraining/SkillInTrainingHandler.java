@@ -4,37 +4,31 @@ import org.xml.sax.SAXException;
 
 import com.beimin.eveapi.core.AbstractContentHandler;
 
-public class SkillInTrainingHandler extends AbstractContentHandler {
-	private SkillInTrainingResponse response;
-
+public class SkillInTrainingHandler extends AbstractContentHandler<SkillInTrainingResponse> {
 	@Override
 	public void startDocument() throws SAXException {
-		response = new SkillInTrainingResponse();
+		setResponse(new SkillInTrainingResponse());
 	}
 
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (qName.equals("currentTQTime"))
-			response.setCurrentTQTime(getDate());
+			getResponse().setCurrentTQTime(getDate());
 		else if (qName.equals("trainingEndTime"))
-			response.setTrainingEndTime(getDate());
+			getResponse().setTrainingEndTime(getDate());
 		else if (qName.equals("trainingStartTime"))
-			response.setTrainingStartTime(getDate());
+			getResponse().setTrainingStartTime(getDate());
 		else if (qName.equals("trainingTypeID"))
-			response.setTrainingTypeID(getInt());
+			getResponse().setTrainingTypeID(getInt());
 		else if (qName.equals("trainingStartSP"))
-			response.setTrainingStartSP(getInt());
+			getResponse().setTrainingStartSP(getInt());
 		else if (qName.equals("trainingDestinationSP"))
-			response.setTrainingDestinationSP(getInt());
+			getResponse().setTrainingDestinationSP(getInt());
 		else if (qName.equals("trainingToLevel"))
-			response.setTrainingToLevel(getInt());
+			getResponse().setTrainingToLevel(getInt());
 		else if (qName.equals("skillInTraining"))
-			response.setSkillInTraining(getBoolean());
+			getResponse().setSkillInTraining(getBoolean());
 		super.endElement(uri, localName, qName);
 	}
 
-	@Override
-	public SkillInTrainingResponse getResponse() {
-		return response;
-	}
 }

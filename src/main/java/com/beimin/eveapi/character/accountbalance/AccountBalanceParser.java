@@ -7,7 +7,7 @@ import com.beimin.eveapi.shared.accountbalance.AbstractAccountBalanceParser;
 import com.beimin.eveapi.shared.accountbalance.AccountBalanceResponse;
 
 public class AccountBalanceParser extends AbstractAccountBalanceParser {
-	private AccountBalanceParser() {
+	private AccountBalanceParser () {
 		super(ApiPath.CHARACTER);
 	}
 

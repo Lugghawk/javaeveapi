@@ -5,17 +5,18 @@ import org.xml.sax.SAXException;
 
 import com.beimin.eveapi.core.AbstractContentHandler;
 
-public class StandingsHandler extends AbstractContentHandler {
-	private StandingsResponse response;
+public class StandingsHandler extends AbstractContentHandler<StandingsResponse> {
+
 	private StandingsList list;
 
 	@Override
 	public void startDocument() throws SAXException {
-		response = new StandingsResponse();
+		setResponse(new StandingsResponse());
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attrs)
+			throws SAXException {
 		super.startElement(uri, localName, qName, attrs);
 		if (qName.equals("rowset")) {
 			list = new StandingsList();
@@ -33,11 +34,7 @@ public class StandingsHandler extends AbstractContentHandler {
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (qName.equals("rowset"))
-			response.addStandingsList(list);
+			getResponse().addStandingsList(list);
 		super.endElement(uri, localName, qName);
-	}
-	@Override
-	public StandingsResponse getResponse() {
-		return response;
 	}
 }

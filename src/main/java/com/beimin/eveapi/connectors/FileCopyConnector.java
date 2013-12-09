@@ -23,11 +23,11 @@ public class FileCopyConnector extends ApiConnector {
 	private final ApiConnector baseConnector;
 	private final File destinationDirectory;
 
-	public FileCopyConnector(File destinationDirectory) {
+	public FileCopyConnector (File destinationDirectory) {
 		this(null, destinationDirectory);
 	}
 
-	public FileCopyConnector(ApiConnector baseConnector, File destinationDirectory) {
+	public FileCopyConnector (ApiConnector baseConnector, File destinationDirectory) {
 		this.baseConnector = baseConnector;
 		this.destinationDirectory = destinationDirectory;
 		if (!this.destinationDirectory.exists())
@@ -35,7 +35,8 @@ public class FileCopyConnector extends ApiConnector {
 	}
 
 	@Override
-	public <E extends ApiResponse> E execute(ApiRequest request, AbstractContentHandler contentHandler, Class<E> clazz) throws ApiException {
+	public <E extends ApiResponse> E execute(ApiRequest request, AbstractContentHandler<E> contentHandler,
+			Class<E> clazz) throws ApiException {
 		ApiConnector connector = getConnector();
 		URL url = connector.getURL(request);
 		Map<String, String> params = connector.getParams(request);
